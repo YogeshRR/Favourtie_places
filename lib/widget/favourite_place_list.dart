@@ -1,46 +1,33 @@
-import 'package:favourite_places/widget/add_favourite_place.dart';
 import 'package:flutter/material.dart';
 
+import 'package:favourite_places/models/place.dart';
+import 'package:favourite_places/screens/add_favourite_place.dart';
+
 class FavouritePlaceList extends StatelessWidget {
-  const FavouritePlaceList({super.key});
+  const FavouritePlaceList({super.key, required this.places});
+
+  final List<Place> places;
 
   @override
   Widget build(BuildContext context) {
-    void _addNewPlace() {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (contex) {
-            return const AddFavouritePlace();
-          },
-        ),
-      );
-    }
-
-    // TODO: implement build
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Your Places'),
-        actions: [
-          IconButton(
-            onPressed: _addNewPlace,
-            icon: const Icon(
-              Icons.add,
-              size: 30.0,
-            ),
-          ),
-        ],
-      ),
-      body: ListView.builder(
-        itemCount: 3,
-        itemBuilder: (context, index) {
-          return const Card(
+    return places.isNotEmpty
+        ? ListView.builder(
+            itemCount: places.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                title: Text(places[index].title,
+                    style: Theme.of(context).textTheme.titleMedium),
+              );
+            },
+          )
+        : Center(
             child: Text(
-              'I am here',
-              style: TextStyle(color: Colors.white),
+              'No Places available',
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyLarge!
+                  .copyWith(color: Theme.of(context).primaryColor),
             ),
           );
-        },
-      ),
-    );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:favourite_places/screens/places.dart';
 import 'package:favourite_places/widget/favourite_place_list.dart';
 import 'package:flutter/material.dart';
 
@@ -39,7 +40,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Great Places',
       theme: theme,
-      home: const FavouritePlaceList(),
+      home: Places(),
     );
   }
 }
