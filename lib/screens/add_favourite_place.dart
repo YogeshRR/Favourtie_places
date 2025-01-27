@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:favourite_places/provider/user_places.dart';
+import 'package:favourite_places/widget/input_image_picker.dart';
 
 class AddFavouritePlace extends ConsumerStatefulWidget {
   const AddFavouritePlace({super.key});
@@ -37,6 +38,10 @@ class _AddFavouritePlaceState extends ConsumerState<AddFavouritePlace> {
               controller: _textEdittingController,
               style: const TextStyle(color: Colors.white),
             ),
+            const SizedBox(
+              height: 16,
+            ),
+            const InputImagePicker(),
             const SizedBox(
               height: 16,
             ),
