@@ -20,6 +20,9 @@ class FavouritePlaceList extends StatelessWidget {
             itemCount: places.length,
             itemBuilder: (context, index) {
               return ListTile(
+                leading: CircleAvatar(
+                  backgroundImage: FileImage(places[index].selectedImage),
+                ),
                 title: Text(
                   places[index].title,
                 ),
