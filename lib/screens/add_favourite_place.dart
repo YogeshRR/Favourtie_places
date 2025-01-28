@@ -15,11 +15,11 @@ class AddFavouritePlace extends ConsumerStatefulWidget {
 class _AddFavouritePlaceState extends ConsumerState<AddFavouritePlace> {
   final _textEdittingController = TextEditingController();
   void savePlaces() {
-    final _addedPlace = _textEdittingController.text;
-    if (_addedPlace.isEmpty) {
+    final addedPlace = _textEdittingController.text;
+    if (addedPlace.isEmpty) {
       return;
     }
-    ref.read(userPlacesProvider.notifier).addPlace(Place(title: _addedPlace));
+    ref.read(userPlacesProvider.notifier).addPlace(Place(title: addedPlace));
     Navigator.of(context).pop();
   }
 
