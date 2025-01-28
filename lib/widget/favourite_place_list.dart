@@ -1,10 +1,15 @@
+import 'dart:io';
+
 import 'package:favourite_places/screens/place_detail_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'package:favourite_places/models/place.dart';
 
 class FavouritePlaceList extends StatelessWidget {
-  const FavouritePlaceList({super.key, required this.places});
+  const FavouritePlaceList({
+    super.key,
+    required this.places,
+  });
 
   final List<Place> places;
 
@@ -22,7 +27,9 @@ class FavouritePlaceList extends StatelessWidget {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => PlaceDetailScreen(
-                        place: Place(title: places[index].title),
+                        place: Place(
+                            title: places[index].title,
+                            selectedImage: places[index].selectedImage),
                       ),
                     ),
                   );

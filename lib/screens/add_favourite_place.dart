@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:favourite_places/models/place.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,12 +16,15 @@ class AddFavouritePlace extends ConsumerStatefulWidget {
 
 class _AddFavouritePlaceState extends ConsumerState<AddFavouritePlace> {
   final _textEdittingController = TextEditingController();
+  File? selectedImage;
   void savePlaces() {
     final addedPlace = _textEdittingController.text;
     if (addedPlace.isEmpty) {
       return;
     }
-    ref.read(userPlacesProvider.notifier).addPlace(Place(title: addedPlace));
+    ref
+        .read(userPlacesProvider.notifier)
+        .addPlace(Place(title: addedPlace, selectedImage: selectedImage!));
     Navigator.of(context).pop();
   }
 
@@ -41,7 +46,9 @@ class _AddFavouritePlaceState extends ConsumerState<AddFavouritePlace> {
             const SizedBox(
               height: 16,
             ),
-            const InputImagePicker(),
+            InputImagePicker(
+              selectedImage: ((image) => selectedImage = image),
+            ),
             const SizedBox(
               height: 16,
             ),
