@@ -17,7 +17,9 @@ tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }
 buildscript {
+    
     dependencies {
-        classpath 'com.android.tools.build:gradle:<latest-version>'
+        //classpath 'com.android.tools.build:gradle:<latest-version>'
+        classpath 'com.android.tools.build:gradle:8.1.2'
     }
 }

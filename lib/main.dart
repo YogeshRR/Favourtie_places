@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Great Places',
       theme: theme,
-      home: Places(),
+      home: const Places(),
     );
   }
 }
