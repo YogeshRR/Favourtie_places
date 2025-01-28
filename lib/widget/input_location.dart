@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:location/location.dart' as loc;
 import 'package:location/location.dart';
 
 class InputLocation extends StatefulWidget {
@@ -9,14 +11,14 @@ class InputLocation extends StatefulWidget {
 }
 
 class _InputLocationState extends State<InputLocation> {
-  Location? userLocation;
+  loc.Location? userLocation;
   var isGetting = false;
 
   void getUserLocation() async {
-    Location location = Location();
+    loc.Location location = loc.Location();
 
     bool serviceEnabled;
-    PermissionStatus permissionGranted;
+    loc.PermissionStatus permissionGranted;
     LocationData locationData;
 
     serviceEnabled = await location.serviceEnabled();
@@ -39,11 +41,28 @@ class _InputLocationState extends State<InputLocation> {
     });
 
     locationData = await location.getLocation();
-    print(locationData.latitude);
-    print(locationData.longitude);
+    final String address = await getAddress(
+      locationData.latitude ?? 0.0,
+      locationData.longitude ?? 0.0,
+    );
+    print(address);
     setState(() {
       isGetting = false;
     });
+  }
+
+  Future<String> getAddress(double latitude, double longitude) async {
+    try {
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(latitude, longitude);
+      Placemark place = placemarks[0];
+      String? address =
+          "${place.street},${place.locality},${place.country},${place.postalCode}";
+      return address;
+    } catch (error) {
+      print(error.toString());
+      return 'Error occurred';
+    }
   }
 
   @override
