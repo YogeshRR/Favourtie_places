@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:location/location.dart' as loc;
 import 'package:location/location.dart';
+import 'package:screenshot/screenshot.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
+
+import 'package:favourite_places/models/place.dart';
 
 class InputLocation extends StatefulWidget {
   const InputLocation({super.key});
@@ -11,8 +16,11 @@ class InputLocation extends StatefulWidget {
 }
 
 class _InputLocationState extends State<InputLocation> {
-  loc.Location? userLocation;
+  Widget? optionalWidget;
+  PlaceLocation? userLocation;
   var isGetting = false;
+  ScreenshotController screenshotController = ScreenshotController();
+  LocationData? localLocationData;
 
   void getUserLocation() async {
     loc.Location location = loc.Location();
@@ -41,12 +49,19 @@ class _InputLocationState extends State<InputLocation> {
     });
 
     locationData = await location.getLocation();
+    localLocationData = locationData;
     final String address = await getAddress(
       locationData.latitude ?? 0.0,
       locationData.longitude ?? 0.0,
     );
     print(address);
+    final image = await screenshotController.capture();
     setState(() {
+      userLocation = PlaceLocation(
+          latitude: locationData.latitude!,
+          longitude: locationData.longitude!,
+          address: address);
+
       isGetting = false;
     });
   }
@@ -67,8 +82,7 @@ class _InputLocationState extends State<InputLocation> {
 
   @override
   Widget build(BuildContext context) {
-    Widget? optionalWidget;
-    optionalWidget = optionalWidget = TextButton.icon(
+    optionalWidget = TextButton.icon(
       onPressed: getUserLocation,
       label: const Text('Select User location'),
       icon: const Icon(Icons.location_on),
@@ -90,18 +104,43 @@ class _InputLocationState extends State<InputLocation> {
           ),
           height: 160,
           width: double.infinity,
-          child: Text(
-            'No location found yet.',
-            style: Theme.of(context)
-                .textTheme
-                .bodyLarge!
-                .copyWith(color: Theme.of(context).colorScheme.surface),
-          ),
+          child: !isGetting
+              ? Screenshot(
+                  controller: screenshotController,
+                  child: FlutterMap(
+                    options: MapOptions(
+                      center: LatLng(localLocationData?.latitude ?? 0.000,
+                          localLocationData?.longitude ?? 0.000),
+                      zoom: 15.0,
+                    ),
+                    children: [
+                      TileLayer(
+                        urlTemplate:
+                            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                        subdomains: const ['a', 'b', 'c'],
+                      ),
+                      MarkerLayer(
+                        markers: [
+                          Marker(
+                            point: LatLng(localLocationData?.latitude ?? 0.000,
+                                localLocationData?.longitude ?? 0.000),
+                            builder: (context) => const Icon(
+                              Icons.location_pin,
+                              color: Colors.red,
+                              //size: 40.0,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                )
+              : const CircularProgressIndicator(),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            optionalWidget,
+            optionalWidget!,
             TextButton.icon(
               onPressed: () {},
               label: const Text('Open the Map'),
