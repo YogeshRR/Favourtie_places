@@ -18,14 +18,16 @@ class AddFavouritePlace extends ConsumerStatefulWidget {
 class _AddFavouritePlaceState extends ConsumerState<AddFavouritePlace> {
   final _textEdittingController = TextEditingController();
   File? selectedImage;
+  PlaceLocation? _selectedLocation;
   void savePlaces() {
     final addedPlace = _textEdittingController.text;
     if (addedPlace.isEmpty) {
       return;
     }
-    ref
-        .read(userPlacesProvider.notifier)
-        .addPlace(Place(title: addedPlace, selectedImage: selectedImage!));
+    ref.read(userPlacesProvider.notifier).addPlace(Place(
+        title: addedPlace,
+        selectedImage: selectedImage!,
+        location: _selectedLocation!));
     Navigator.of(context).pop();
   }
 
@@ -53,7 +55,9 @@ class _AddFavouritePlaceState extends ConsumerState<AddFavouritePlace> {
             const SizedBox(
               height: 16,
             ),
-            const InputLocation(),
+            InputLocation(
+              onSelectLocation: ((location) => _selectedLocation = location),
+            ),
             const SizedBox(
               height: 16,
             ),

@@ -13,10 +13,11 @@ class Place {
   String id;
   String title;
   File selectedImage;
-  //PlaceLocation location;
+  PlaceLocation location;
 
   Place({
     required this.title,
     required this.selectedImage,
+    required this.location,
   }) : id = const Uuid().v4();
 }

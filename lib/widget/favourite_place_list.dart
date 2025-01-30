@@ -24,13 +24,16 @@ class FavouritePlaceList extends StatelessWidget {
                 title: Text(
                   places[index].title,
                 ),
+                subtitle: Text(places[index].location.address),
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => PlaceDetailScreen(
                         place: Place(
-                            title: places[index].title,
-                            selectedImage: places[index].selectedImage),
+                          title: places[index].title,
+                          selectedImage: places[index].selectedImage,
+                          location: places[index].location,
+                        ),
                       ),
                     ),
                   );

@@ -9,8 +9,8 @@ import 'package:latlong2/latlong.dart';
 import 'package:favourite_places/models/place.dart';
 
 class InputLocation extends StatefulWidget {
-  const InputLocation({super.key});
-
+  InputLocation({super.key, required this.onSelectLocation});
+  Function(PlaceLocation selectedLocation) onSelectLocation;
   @override
   State<InputLocation> createState() => _InputLocationState();
 }
@@ -64,6 +64,8 @@ class _InputLocationState extends State<InputLocation> {
 
       isGetting = false;
     });
+
+    widget.onSelectLocation(userLocation!);
   }
 
   Future<String> getAddress(double latitude, double longitude) async {
