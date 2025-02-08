@@ -87,7 +87,7 @@ class _InputLocationState extends State<InputLocation> {
     final selectedLocation = await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) {
-          return MapScreen();
+          return const MapScreen();
         },
       ),
     );
