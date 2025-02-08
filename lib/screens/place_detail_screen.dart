@@ -1,4 +1,5 @@
 import 'package:favourite_places/models/place.dart';
+import 'package:favourite_places/screens/map_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -12,33 +13,42 @@ class PlaceDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     ScreenshotController screenshotController = ScreenshotController();
     Widget? mapWidget;
-    mapWidget = ClipOval(
-      child: Screenshot(
-        controller: screenshotController,
-        child: FlutterMap(
-          options: MapOptions(
-            center: LatLng(place.location.latitude, place.location.longitude),
-            zoom: 15.0,
-          ),
-          children: [
-            TileLayer(
-              urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-              subdomains: const ['a', 'b', 'c'],
+    mapWidget = Container(
+      width: 300, // Circular map size
+      height: 300,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(color: Colors.blue, width: 4),
+      ),
+      child: ClipOval(
+        child: Screenshot(
+          controller: screenshotController,
+          child: FlutterMap(
+            options: MapOptions(
+              center: LatLng(place.location.latitude, place.location.longitude),
+              zoom: 15.0,
             ),
-            MarkerLayer(
-              markers: [
-                Marker(
-                  point:
-                      LatLng(place.location.latitude, place.location.longitude),
-                  builder: (context) => const Icon(
-                    Icons.location_pin,
-                    color: Colors.red,
-                    //size: 40.0,
+            children: [
+              TileLayer(
+                urlTemplate:
+                    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                subdomains: const ['a', 'b', 'c'],
+              ),
+              MarkerLayer(
+                markers: [
+                  Marker(
+                    point: LatLng(
+                        place.location.latitude, place.location.longitude),
+                    builder: (context) => const Icon(
+                      Icons.location_pin,
+                      color: Colors.red,
+                      //size: 40.0,
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -60,7 +70,22 @@ class PlaceDetailScreen extends StatelessWidget {
             right: 0,
             child: Column(
               children: [
-                CircleAvatar(radius: 70, child: mapWidget),
+                GestureDetector(
+                  child: CircleAvatar(radius: 70, child: mapWidget),
+                  onTap: () {
+                    print('I am clicked');
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return MapScreen(
+                            location: place.location,
+                            isSelecting: false,
+                          );
+                        },
+                      ),
+                    );
+                  },
+                ),
                 Container(
                   alignment: Alignment.center,
                   padding: const EdgeInsets.symmetric(
@@ -77,11 +102,26 @@ class PlaceDetailScreen extends StatelessWidget {
                       end: Alignment.bottomCenter,
                     ),
                   ),
-                  child: Text(
-                    place.location.address,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: Colors.amber,
+                  child: GestureDetector(
+                    onTap: () {
+                      print('I am clicked');
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return MapScreen(
+                              location: place.location,
+                              isSelecting: false,
+                            );
+                          },
+                        ),
+                      );
+                    },
+                    child: Text(
+                      place.location.address,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Colors.amber,
+                      ),
                     ),
                   ),
                 ),

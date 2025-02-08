@@ -1,3 +1,4 @@
+import 'package:favourite_places/screens/map_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:location/location.dart' as loc;
@@ -21,7 +22,7 @@ class _InputLocationState extends State<InputLocation> {
   var isGetting = false;
   ScreenshotController screenshotController = ScreenshotController();
   LocationData? localLocationData;
-
+  LatLng? userSelectedLocation;
   void getUserLocation() async {
     loc.Location location = loc.Location();
 
@@ -82,6 +83,24 @@ class _InputLocationState extends State<InputLocation> {
     }
   }
 
+  void getSelectedLocation() async {
+    final selectedLocation = await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) {
+          return MapScreen();
+        },
+      ),
+    );
+
+    setState(() {
+      userSelectedLocation = selectedLocation;
+      widget.onSelectLocation(PlaceLocation(
+          latitude: selectedLocation.latitude,
+          longitude: selectedLocation.longitude,
+          address: 'User Selected Location'));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     optionalWidget = TextButton.icon(
@@ -111,9 +130,19 @@ class _InputLocationState extends State<InputLocation> {
                   controller: screenshotController,
                   child: FlutterMap(
                     options: MapOptions(
-                      center: LatLng(localLocationData?.latitude ?? 0.000,
-                          localLocationData?.longitude ?? 0.000),
+                      center: userSelectedLocation ??
+                          LatLng(localLocationData?.latitude ?? 37.422,
+                              localLocationData?.longitude ?? -122.084),
                       zoom: 15.0,
+                      onTap: (tapPosition, point) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return const MapScreen();
+                            },
+                          ),
+                        );
+                      },
                     ),
                     children: [
                       TileLayer(
@@ -124,8 +153,9 @@ class _InputLocationState extends State<InputLocation> {
                       MarkerLayer(
                         markers: [
                           Marker(
-                            point: LatLng(localLocationData?.latitude ?? 0.000,
-                                localLocationData?.longitude ?? 0.000),
+                            point: userSelectedLocation ??
+                                LatLng(localLocationData?.latitude ?? 37.422,
+                                    localLocationData?.longitude ?? -122.084),
                             builder: (context) => const Icon(
                               Icons.location_pin,
                               color: Colors.red,
@@ -144,7 +174,7 @@ class _InputLocationState extends State<InputLocation> {
           children: [
             optionalWidget!,
             TextButton.icon(
-              onPressed: () {},
+              onPressed: getSelectedLocation,
               label: const Text('Open the Map'),
               icon: const Icon(Icons.map),
             ),
